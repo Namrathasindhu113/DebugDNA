@@ -245,6 +245,4 @@ GitHub: https://github.com/Namrathasindhu113
 
 ---
 
-## License
 
-This project is provided for educational and portfolio purposes.
