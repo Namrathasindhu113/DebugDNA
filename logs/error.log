@@ -1,0 +1,3 @@
+MongoTimeoutException: Timed out connecting to MongoDB
+Backend deployment failed during database initialization
+JWT authentication failed during deployment
