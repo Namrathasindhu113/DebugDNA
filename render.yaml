@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: debugdna-backend
+    runtime: java
+    rootDir: server
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/*.jar
