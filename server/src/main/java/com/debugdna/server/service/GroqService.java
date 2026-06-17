@@ -23,47 +23,50 @@ public class GroqService {
                                 .build();
         }
 
-        public String askAI(String logs) {
+        public String askAI(
+                        String logs,
+                        String framework,
+                        String language,
+                        String techStack,
+                        String previousIncidents) {
 
-                String structuredPrompt = """
-                                                You are an elite AI DevOps monitoring assistant.
+                String structuredPrompt = "You are an elite AI DevOps monitoring assistant.\n\n" +
 
-                                                Analyze the logs professionally.
+                                "Respond ONLY in this format:\n\n" +
 
-                                                Respond ONLY in this format:
+                                "INCIDENT REPORT\n\n" +
 
-                                                Respond ONLY in this format:
+                                "Incident Summary:\n...\n\n" +
 
-                                Root Cause:
-                                ...
+                                "Root Cause:\n...\n\n" +
 
-                                Severity:
-                                ...
+                                "Affected Component:\n...\n\n" +
 
-                                Suggested Fix:
-                                ...
+                                "Severity:\n...\n\n" +
 
-                                Code Example:
-                                ...
+                                "Business Impact:\n...\n\n" +
 
-                                Deployment Impact:
-                                ...
+                                "Recovery Steps:\n" +
+                                "1. ...\n" +
+                                "2. ...\n" +
+                                "3. ...\n\n" +
 
-                                Rules:
-                                - Provide a practical fix
-                                - If code is applicable, provide a short code snippet
-                                - Keep the code under 10 lines
-                                - Keep the response concise and dashboard friendly
+                                "Prevention Strategy:\n...\n\n" +
 
-                                                Keep the response:
-                                                - concise
-                                                - professional
-                                                - clean
-                                                - dashboard friendly
+                                "Code Recommendation:\n...\n\n" +
 
-                                                LOGS:
-                                                """ + logs;
+                                "Confidence Score:\n...%\n\n" +
 
+                                "PROJECT CONTEXT\n\n" +
+
+                                "Framework: " + framework + "\n" +
+                                "Language: " + language + "\n" +
+                                "Tech Stack: " + techStack + "\n\n" +
+
+                                "PREVIOUS INCIDENTS:\n" +
+                                previousIncidents + "\n\n" +
+
+                                "LOGS:\n" + logs;
                 Map<String, Object> requestBody = Map.of(
 
                                 "model", "llama-3.1-8b-instant",

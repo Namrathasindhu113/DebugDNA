@@ -16,147 +16,142 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 @Service
 public class LogWatcherService {
 
-    private final GroqService groqService;
-    private final IssueRepository issueRepository;
-    private final SimpMessagingTemplate messagingTemplate;
+        private final GroqService groqService;
+        private final IssueRepository issueRepository;
+        private final SimpMessagingTemplate messagingTemplate;
 
-    public LogWatcherService(
-            GroqService groqService,
-            IssueRepository issueRepository,
-            SimpMessagingTemplate messagingTemplate) {
+        public LogWatcherService(
+                        GroqService groqService,
+                        IssueRepository issueRepository,
+                        SimpMessagingTemplate messagingTemplate) {
 
-        this.groqService = groqService;
-        this.issueRepository = issueRepository;
-        this.messagingTemplate = messagingTemplate;
-    }
+                this.groqService = groqService;
+                this.issueRepository = issueRepository;
+                this.messagingTemplate = messagingTemplate;
+        }
 
-    @PostConstruct
-    public void watchLogs() {
+        @PostConstruct
+        public void watchLogs() {
 
-        new Thread(() -> {
+                new Thread(() -> {
 
-            try {
+                        try {
 
-                WatchService watchService = FileSystems.getDefault().newWatchService();
+                                WatchService watchService = FileSystems.getDefault().newWatchService();
 
-                Path path = Paths.get("../logs");
+                                Path path = Paths.get("../logs");
 
-                path.register(
-                        watchService,
-                        StandardWatchEventKinds.ENTRY_CREATE,
-                        StandardWatchEventKinds.ENTRY_MODIFY);
+                                path.register(
+                                                watchService,
+                                                StandardWatchEventKinds.ENTRY_CREATE,
+                                                StandardWatchEventKinds.ENTRY_MODIFY);
 
-                System.out.println("DEBUGDNA AI Log Watcher Active...");
+                                System.out.println("DEBUGDNA AI Log Watcher Active...");
 
-                while (true) {
+                                while (true) {
 
-                    WatchKey key = watchService.take();
+                                        WatchKey key = watchService.take();
 
-                    for (WatchEvent<?> event : key.pollEvents()) {
+                                        for (WatchEvent<?> event : key.pollEvents()) {
 
-                        Path fileName = (Path) event.context();
+                                                Path fileName = (Path) event.context();
 
-                        if (fileName.toString().endsWith(".log")) {
+                                                if (fileName.toString().endsWith(".log")) {
 
-                            Path fullPath = path.resolve(fileName);
+                                                        Path fullPath = path.resolve(fileName);
 
-                            String logs = Files.readString(fullPath);
+                                                        String logs = Files.readString(fullPath);
 
-                            String aiAnalysis = groqService.askAI(
-                                    """
-                                            Analyze this production log professionally.
+                                                        String aiAnalysis = groqService.askAI(
+                                                                        logs,
+                                                                        "Unknown Framework",
+                                                                        "Unknown Language",
+                                                                        "Unknown Tech Stack",
+                                                                        "No previous incidents");
+                                                        List<Issue> existingIssues = issueRepository.findAll();
 
-                                            Provide:
-                                            - Root cause
-                                            - Severity
-                                            - Suggested Fix
-                                            - Deployment impact
+                                                        Issue duplicate = null;
 
-                                            LOGS:
-                                            """ + logs);
-                            List<Issue> existingIssues = issueRepository.findAll();
+                                                        for (Issue existing : existingIssues) {
 
-                            Issue duplicate = null;
+                                                                if (existing.getDescription() != null &&
+                                                                                existing.getDescription().contains(
+                                                                                                logs.substring(
+                                                                                                                0,
+                                                                                                                Math.min(logs.length(),
+                                                                                                                                30)))) {
 
-                            for (Issue existing : existingIssues) {
+                                                                        duplicate = existing;
+                                                                        break;
+                                                                }
+                                                        }
 
-                                if (existing.getDescription() != null &&
-                                        existing.getDescription().contains(
-                                                logs.substring(
-                                                        0,
-                                                        Math.min(logs.length(), 30)))) {
+                                                        if (duplicate != null) {
 
-                                    duplicate = existing;
-                                    break;
+                                                                duplicate.setOccurrences(
+                                                                                duplicate.getOccurrences() + 1);
+
+                                                                duplicate.setLastSeen(
+                                                                                LocalDateTime.now());
+
+                                                                duplicate.setStatus("ACTIVE");
+
+                                                                issueRepository.save(duplicate);
+                                                                messagingTemplate.convertAndSend(
+                                                                                "/topic/issues",
+                                                                                duplicate);
+
+                                                                System.out.println(
+                                                                                "Existing issue updated.");
+
+                                                        } else {
+
+                                                                Issue issue = new Issue();
+
+                                                                issue.setTitle(
+                                                                                "Automated Log Detection");
+
+                                                                issue.setSeverity("HIGH");
+
+                                                                issue.setDescription(logs);
+
+                                                                issue.setAiAnalysis(aiAnalysis);
+
+                                                                issue.setSuggestedFix(
+                                                                                "AI-generated fix available");
+
+                                                                issue.setCreatedAt(
+                                                                                LocalDateTime.now());
+
+                                                                issue.setLastSeen(
+                                                                                LocalDateTime.now());
+
+                                                                issue.setOccurrences(1);
+
+                                                                issue.setStatus("ACTIVE");
+
+                                                                issueRepository.save(issue);
+                                                                messagingTemplate.convertAndSend(
+                                                                                "/topic/issues",
+                                                                                issue);
+                                                                System.out.println(
+                                                                                "New AI issue generated.");
+                                                        }
+
+                                                        System.out.println(
+                                                                        "AI issue generated automatically.");
+                                                }
+                                        }
+
+                                        key.reset();
                                 }
-                            }
 
-                            if (duplicate != null) {
+                        } catch (
+                                        IOException | InterruptedException e) {
 
-                                duplicate.setOccurrences(
-                                        duplicate.getOccurrences() + 1);
-
-                                duplicate.setLastSeen(
-                                        LocalDateTime.now());
-
-                                duplicate.setStatus("ACTIVE");
-
-                                issueRepository.save(duplicate);
-                                messagingTemplate.convertAndSend(
-                                        "/topic/issues",
-                                        duplicate);
-
-                                System.out.println(
-                                        "Existing issue updated.");
-
-                            } else {
-
-                                Issue issue = new Issue();
-
-                                issue.setTitle(
-                                        "Automated Log Detection");
-
-                                issue.setSeverity("HIGH");
-
-                                issue.setDescription(logs);
-
-                                issue.setAiAnalysis(aiAnalysis);
-
-                                issue.setSuggestedFix(
-                                        "AI-generated fix available");
-
-                                issue.setCreatedAt(
-                                        LocalDateTime.now());
-
-                                issue.setLastSeen(
-                                        LocalDateTime.now());
-
-                                issue.setOccurrences(1);
-
-                                issue.setStatus("ACTIVE");
-
-                                issueRepository.save(issue);
-                                messagingTemplate.convertAndSend(
-                                        "/topic/issues",
-                                        issue);
-                                System.out.println(
-                                        "New AI issue generated.");
-                            }
-
-                            System.out.println(
-                                    "AI issue generated automatically.");
+                                e.printStackTrace();
                         }
-                    }
 
-                    key.reset();
-                }
-
-            } catch (
-                    IOException | InterruptedException e) {
-
-                e.printStackTrace();
-            }
-
-        }).start();
-    }
+                }).start();
+        }
 }

@@ -11,6 +11,18 @@ function Projects() {
   const [environment, setEnvironment] =
     useState("development")
 
+  const [framework, setFramework] =
+  useState("")
+
+const [language, setLanguage] =
+  useState("")
+
+const [repositoryUrl, setRepositoryUrl] =
+  useState("")
+
+const [techStack, setTechStack] =
+  useState("")  
+
   const fetchProjects = () => {
 
     axios
@@ -37,14 +49,23 @@ function Projects() {
   }
 
     await axios.post(
-      "http://localhost:9090/api/projects",
-      {
-        name,
-        environment
-      }
-    )
+  "http://localhost:9090/api/projects",
+  {
+    name,
+    environment,
+    framework,
+    language,
+    repositoryUrl,
+    techStack
+  }
+)
 
     setName("")
+
+    setFramework("")
+setLanguage("")
+setRepositoryUrl("")
+setTechStack("")
 
     fetchProjects()
   }
@@ -86,6 +107,42 @@ function Projects() {
 
         </select>
 
+        <input
+  value={framework}
+  onChange={(e) =>
+    setFramework(e.target.value)
+  }
+  placeholder="Framework (React, Spring Boot...)"
+  className="bg-black/30 border border-white/10 rounded-xl px-4 py-2"
+/>
+
+<input
+  value={language}
+  onChange={(e) =>
+    setLanguage(e.target.value)
+  }
+  placeholder="Language (Java, JavaScript...)"
+  className="bg-black/30 border border-white/10 rounded-xl px-4 py-2"
+/>
+
+<input
+  value={repositoryUrl}
+  onChange={(e) =>
+    setRepositoryUrl(e.target.value)
+  }
+  placeholder="Repository URL"
+  className="bg-black/30 border border-white/10 rounded-xl px-4 py-2"
+/>
+
+<input
+  value={techStack}
+  onChange={(e) =>
+    setTechStack(e.target.value)
+  }
+  placeholder="Tech Stack (React, MongoDB...)"
+  className="bg-black/30 border border-white/10 rounded-xl px-4 py-2"
+/>
+
         <button
           onClick={createProject}
           className="px-4 py-2 rounded-xl bg-cyan-500"
@@ -113,6 +170,18 @@ function Projects() {
               {project.environment}
             </p>
 
+            <p className="text-slate-400">
+  Framework: {project.framework}
+</p>
+
+<p className="text-slate-400">
+  Language: {project.language}
+</p>
+
+<p className="text-slate-400">
+  Tech Stack: {project.techStack}
+</p>
+
             <p className="mt-3 text-cyan-400 break-all">
               {project.apiKey}
             </p>
@@ -120,6 +189,7 @@ function Projects() {
           </Link>
 
         ))}
+        
 
       </div>
 

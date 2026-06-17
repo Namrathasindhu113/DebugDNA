@@ -21,6 +21,18 @@ public class Issue {
 
     private String aiAnalysis;
 
+    private String rootCause;
+
+    private String businessImpact;
+
+    private String recoverySteps;
+
+    private String preventionStrategy;
+
+    private String confidenceScore;
+
+    private String previousFix;
+
     private String suggestedFix;
 
     private String projectId;

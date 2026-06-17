@@ -15,4 +15,7 @@ public interface IssueRepository
         List<Issue> findByTitleAndProjectId(
                         String title,
                         String projectId);
+
+        List<Issue> findByProjectId(
+                        String projectId);
 }

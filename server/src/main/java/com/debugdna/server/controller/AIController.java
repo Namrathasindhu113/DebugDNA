@@ -23,7 +23,12 @@ public class AIController {
 
         String prompt = body.get("prompt");
 
-        String response = groqService.askAI(prompt);
+        String response = groqService.askAI(
+                prompt,
+                "General Chat",
+                "Unknown Language",
+                "Unknown Tech Stack",
+                "No previous incidents");
 
         return Map.of(
                 "response",

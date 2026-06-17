@@ -322,19 +322,25 @@ const filteredIssues = issues.filter(
 
           {filteredIssues.map((issue) => (
             <IssueCard
-              id={issue.id}
-              key={issue.id}
-              title={issue.title}
-              severity={issue.severity}
-              description={issue.description}
-              aiAnalysis={issue.aiAnalysis}
-              suggestedFix={issue.suggestedFix}
-              occurrences={issue.occurrences}
-              status={issue.status}
-              lastSeen={issue.lastSeen}
-              environment={issue.environment}
-              projectId={issue.projectId}
-            />
+  id={issue.id}
+  title={issue.title}
+  severity={issue.severity}
+  description={issue.description}
+  aiAnalysis={issue.aiAnalysis}
+
+  rootCause={issue.rootCause}
+  businessImpact={issue.businessImpact}
+  recoverySteps={issue.recoverySteps}
+  preventionStrategy={issue.preventionStrategy}
+  confidenceScore={issue.confidenceScore}
+
+  suggestedFix={issue.suggestedFix}
+  occurrences={issue.occurrences}
+  status={issue.status}
+  lastSeen={issue.lastSeen}
+  environment={issue.environment}
+  projectId={issue.projectId}
+/>
           ))}
 
         </div>

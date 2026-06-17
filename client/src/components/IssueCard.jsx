@@ -1,19 +1,28 @@
 import { AlertTriangle } from "lucide-react"
 import axios from "axios"
 
-function IssueCard({
+ function IssueCard({
+
+  
   id,
   title,
   severity,
   description,
   aiAnalysis,
+
+  rootCause,
+  businessImpact,
+  recoverySteps,
+  preventionStrategy,
+  confidenceScore,
+
   suggestedFix,
   occurrences,
   status,
   lastSeen,
   environment,
   projectId,
-}) {
+}){
 
   const severityColor =
     severity === "HIGH"
@@ -40,6 +49,7 @@ function IssueCard({
   }
 
   return (
+
     <div className="bg-white/5 border border-white/10 rounded-3xl p-6 backdrop-blur-xl">
 
       <div className="flex justify-between items-start">
@@ -81,6 +91,7 @@ function IssueCard({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5 text-sm">
 
         <div className="bg-white/5 rounded-xl p-3">
+
           <p className="text-slate-400">
             Last Seen
           </p>
@@ -88,9 +99,11 @@ function IssueCard({
           <p className="text-white mt-1">
             {lastSeen || "Just now"}
           </p>
+
         </div>
 
         <div className="bg-white/5 rounded-xl p-3">
+
           <p className="text-slate-400">
             Environment
           </p>
@@ -98,9 +111,11 @@ function IssueCard({
           <p className="text-white mt-1">
             {environment || "development"}
           </p>
+
         </div>
 
         <div className="bg-white/5 rounded-xl p-3">
+
           <p className="text-slate-400">
             Project
           </p>
@@ -108,35 +123,114 @@ function IssueCard({
           <p className="text-white mt-1">
             {projectId || "-"}
           </p>
+
         </div>
 
       </div>
 
-      <p className="mt-6 text-slate-400 leading-relaxed whitespace-pre-wrap">
-        {description}
-      </p>
+      <div className="mt-6">
 
-      <div className="mt-6 border-t border-white/10 pt-5">
-
-        <div className="mt-6 border-t border-white/10 pt-5">
-
-  <h3 className="text-cyan-400 font-semibold">
-    AI Analysis
-  </h3>
-
-  <div className="mt-3 bg-black/20 rounded-xl p-4">
-
-    <pre className="text-slate-300 whitespace-pre-wrap text-sm overflow-x-auto">
-      {aiAnalysis}
-    </pre>
-
-  </div>
-
-</div>
+        <p className="text-slate-400 whitespace-pre-wrap">
+          {description}
+        </p>
 
       </div>
 
-      <div className="mt-5">
+      {/* Incident Intelligence */}
+
+      <div className="mt-8 border-t border-white/10 pt-6">
+
+        <h3 className="text-cyan-400 font-bold text-xl">
+          Incident Intelligence
+        </h3>
+
+        <div className="grid md:grid-cols-2 gap-4 mt-4">
+
+          <div className="bg-white/5 rounded-xl p-4">
+
+            <p className="text-slate-400 text-sm">
+              Root Cause
+            </p>
+
+            <p className="text-white mt-2">
+              {rootCause || "Not available"}
+            </p>
+
+          </div>
+
+          <div className="bg-white/5 rounded-xl p-4">
+
+            <p className="text-slate-400 text-sm">
+              Confidence Score
+            </p>
+
+            <p className="text-green-400 font-bold mt-2">
+              {confidenceScore || "N/A"}
+            </p>
+
+          </div>
+
+          <div className="bg-white/5 rounded-xl p-4">
+
+            <p className="text-slate-400 text-sm">
+              Business Impact
+            </p>
+
+            <p className="text-white mt-2">
+              {businessImpact || "Not available"}
+            </p>
+
+          </div>
+
+          <div className="bg-white/5 rounded-xl p-4">
+
+            <p className="text-slate-400 text-sm">
+              Prevention Strategy
+            </p>
+
+            <p className="text-white mt-2">
+              {preventionStrategy || "Not available"}
+            </p>
+
+          </div>
+
+        </div>
+
+        <div className="mt-4 bg-black/20 rounded-xl p-4">
+
+          <h4 className="text-cyan-400 font-semibold">
+            Recovery Steps
+          </h4>
+
+          <pre className="mt-2 text-slate-300 whitespace-pre-wrap text-sm">
+            {recoverySteps || "No recovery steps available"}
+          </pre>
+
+        </div>
+
+      </div>
+
+      {/* AI Analysis */}
+
+      <div className="mt-8 border-t border-white/10 pt-6">
+
+        <h3 className="text-cyan-400 font-bold">
+          Raw AI Analysis
+        </h3>
+
+        <div className="mt-3 bg-black/20 rounded-xl p-4">
+
+          <pre className="text-slate-300 whitespace-pre-wrap text-sm overflow-x-auto">
+            {aiAnalysis}
+          </pre>
+
+        </div>
+
+      </div>
+
+      {/* Suggested Fix */}
+
+      <div className="mt-6">
 
         <h3 className="text-cyan-400 font-semibold">
           Suggested Fix
@@ -147,6 +241,8 @@ function IssueCard({
         </p>
 
       </div>
+
+      {/* Status Actions */}
 
       <div className="mt-6 flex gap-3 flex-wrap">
 
@@ -174,6 +270,7 @@ function IssueCard({
       </div>
 
     </div>
+
   )
 }
 

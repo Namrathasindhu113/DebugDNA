@@ -20,5 +20,13 @@ public class Project {
 
     private String environment;
 
+    private String framework;
+
+    private String language;
+
+    private String repositoryUrl;
+
+    private String techStack;
+
     private LocalDateTime createdAt;
 }
