@@ -1,199 +1,113 @@
 # DebugDNA
 
-DebugDNA is an AI-powered developer intelligence platform designed to help engineering teams monitor applications, analyze failures, identify root causes, and accelerate debugging workflows.
+DebugDNA is an AI-powered monitoring and debugging platform that helps engineering teams detect, analyze, and resolve application issues faster through real-time insights and intelligent root-cause analysis.
 
-The platform combines real-time monitoring, log analysis, incident management, and AI-assisted troubleshooting into a unified dashboard that provides actionable insights for developers and operations teams.
-
----
-
-## Overview
-
-Modern applications generate large volumes of logs and operational data, making incident diagnosis time-consuming and complex. DebugDNA addresses this challenge by automatically collecting telemetry data, analyzing failures using large language models, and presenting structured debugging insights through an interactive monitoring dashboard.
-
-The platform enables developers to:
-
-* Detect application failures in real time
-* Analyze logs using AI-driven root cause analysis
-* Track incidents across multiple projects
-* Receive intelligent debugging recommendations
-* Monitor severity trends and system health
-* Manage projects and API integrations from a centralized interface
+This repository contains a full-stack reference implementation: a React + Vite frontend, a Spring Boot backend, and a small SDK for collecting and forwarding telemetry from applications.
 
 ---
 
-## Key Features
+## Quick summary
 
-### AI-Powered Log Analysis
-
-* Automated root cause identification
-* Severity classification
-* Deployment impact assessment
-* AI-generated remediation suggestions
-
-### Real-Time Monitoring
-
-* Live issue ingestion
-* WebSocket-based updates
-* Incident occurrence tracking
-* Status management and resolution workflow
-
-### Developer Intelligence Dashboard
-
-* Centralized monitoring interface
-* Severity-based issue visualization
-* Incident analytics and reporting
-* Historical issue tracking
-
-### AI Debug Assistant
-
-* Conversational troubleshooting interface
-* Context-aware debugging support
-* Infrastructure and application-level recommendations
-
-### Project Management
-
-* Project creation and configuration
-* API key generation
-* Environment-based project organization
-* SDK integration support
-
-### Alerting System
-
-* Automated email notifications
-* High-severity incident alerts
-* AI-generated incident summaries
-
-### Authentication and Access Control
-
-* User registration and login
-* Protected application routes
-* Session-based authentication workflow
+- Real-time incident ingestion and monitoring
+- AI-assisted log analysis and root cause suggestions
+- Incident lifecycle and severity tracking
+- Centralized developer dashboard for troubleshooting
+- SDK for easy integration and telemetry collection
 
 ---
 
-## System Architecture
+## What's new (updated project)
 
-```text
-Application
-      │
-      ▼
-DebugDNA SDK
-      │
-      ▼
-Spring Boot Backend
-      │
- ┌────┴────┐
- │         │
- ▼         ▼
-MongoDB   Groq AI
- │         │
- └────┬────┘
-      ▼
-React Dashboard
-```
+- Refreshed developer documentation and onboarding steps
+- Clearer local development commands for frontend and backend
+- Environment variable guidance for secrets and AI integrations
+- Consolidated architecture diagram and technology list
 
 ---
 
-## Technology Stack
+## Features
 
-### Frontend
-
-* React
-* Vite
-* Tailwind CSS
-* React Router
-* Axios
-* Recharts
-
-### Backend
-
-* Spring Boot
-* Spring Security
-* Spring Data MongoDB
-* Spring WebSocket
-* Spring Mail
-
-### Database
-
-* MongoDB
-
-### Artificial Intelligence
-
-* Groq API
-* Llama 3.1
-
-### Development Tools
-
-* Maven
-* Git
-* GitHub
-* Postman
+- AI-powered log analysis and root-cause inference
+- Real-time monitoring with WebSocket-based updates
+- Incident management (create, track, resolve)
+- Severity classification and historical analytics
+- Alerting (email and future integrations for Slack/Teams)
+- Project and API key management for multi-environment support
+- Conversational AI Debug Assistant that suggests remediation steps
 
 ---
 
-## Repository Structure
+## Architecture
 
-```text
+Application -> DebugDNA SDK -> Spring Boot Backend -> MongoDB + AI Engine -> React Dashboard
+
+---
+
+## Technology stack
+
+Frontend
+- React
+- Vite
+- Tailwind CSS
+- React Router
+- Axios
+
+Backend
+- Java, Spring Boot
+- Spring Security
+- Spring Data MongoDB
+- Spring WebSocket
+- Spring Mail
+
+Database
+- MongoDB
+
+AI / Observability
+- Groq API (configurable)
+- Llama 3.x (used by AI components, configurable provider)
+
+Development
+- Maven
+- Node / npm
+- Git & GitHub
+
+---
+
+## Repository layout
+
 DebugDNA/
 ├── client/          # React frontend
 ├── server/          # Spring Boot backend
-├── debugdna-sdk/    # Monitoring SDK
-└── logs/            # Application logs
-```
+├── debugdna-sdk/    # Monitoring SDK for instrumenting apps
+└── logs/            # Example or collected logs
 
 ---
 
-## Core Modules
+## Local development
 
-### Monitoring Dashboard
+Prerequisites
+- Java 17+
+- Maven
+- Node 18+ (or the version the project specifies)
+- MongoDB running locally or a connection string
 
-Provides a centralized view of active incidents, severity levels, deployment health, and infrastructure status.
-
-### Incident Management
-
-Tracks issue lifecycle, occurrences, timestamps, and resolution status.
-
-### AI Analysis Engine
-
-Processes telemetry and log data to generate structured debugging insights and remediation guidance.
-
-### Analytics
-
-Provides incident distribution metrics and severity-based reporting.
-
-### Project Management
-
-Supports project creation, API key generation, and SDK onboarding.
-
-### Alerting Service
-
-Triggers automated notifications for critical incidents and operational anomalies.
-
----
-
-## Local Development
-
-### Clone Repository
+Clone and run
 
 ```bash
 git clone https://github.com/Namrathasindhu113/DebugDNA.git
 cd DebugDNA
 ```
 
-### Backend
+Backend
 
 ```bash
 cd server
 mvn spring-boot:run
 ```
 
-Backend URL:
+Default backend URL: http://localhost:9090
 
-```text
-http://localhost:9090
-```
-
-### Frontend
+Frontend
 
 ```bash
 cd client
@@ -201,17 +115,13 @@ npm install
 npm run dev
 ```
 
-Frontend URL:
-
-```text
-http://localhost:5173
-```
+Default frontend URL: http://localhost:5173
 
 ---
 
 ## Configuration
 
-The backend requires the following environment variables:
+Required environment variables for the backend (example .env or system env):
 
 ```properties
 SPRING_DATA_MONGODB_URI=
@@ -220,17 +130,27 @@ SPRING_MAIL_USERNAME=
 SPRING_MAIL_PASSWORD=
 ```
 
+Optional / future integration variables
+- AI_PROVIDER - to select the AI backend provider
+- SLACK_WEBHOOK_URL, TEAMS_WEBHOOK_URL - for notifications
+
 ---
 
-## Future Enhancements
+## Contributing
 
-* Distributed system monitoring
-* Kubernetes integration
-* GitHub Actions integration
-* Slack and Microsoft Teams notifications
-* Predictive incident detection
-* AI-generated deployment reports
-* Advanced observability dashboards
+Contributions welcome — please open issues or PRs. For code changes:
+- Fork the repo
+- Create a feature branch
+- Open a PR with a clear description of the changes
+
+---
+
+## Roadmap / Future work
+
+- Kubernetes and distributed tracing integration
+- Predictive incident detection and alert suppression
+- Slack / Teams / GitHub Actions integrations
+- Improved observability dashboards and advanced analytics
 
 ---
 
@@ -238,11 +158,13 @@ SPRING_MAIL_PASSWORD=
 
 Namratha Sindhu
 
-Information Science Engineering
-Garden City University
+Information Science Engineering, Garden City University
 
 GitHub: https://github.com/Namrathasindhu113
 
 ---
 
-
+If you'd like, I can also:
+- Add badges (build, license, languages)
+- Add a short quickstart for the SDK (example instrumentation snippet)
+- Split the README into docs/ with smaller files and a TOC
