@@ -1,9 +1,8 @@
+import { useState } from "react"
 import { AlertTriangle } from "lucide-react"
 import axios from "axios"
 
  function IssueCard({
-
-  
   id,
   title,
   severity,
@@ -22,6 +21,12 @@ import axios from "axios"
   lastSeen,
   environment,
   projectId,
+  assignedTo,
+  assignedTeam,
+  assignedBy,
+  assignedAt,
+  issues,
+  setIssues,
 }){
 
   const severityColor =
@@ -31,15 +36,59 @@ import axios from "axios"
       ? "text-yellow-300 border-yellow-500/30 bg-yellow-500/20"
       : "text-green-300 border-green-500/30 bg-green-500/20"
 
+  const [assignmentForm, setAssignmentForm] = useState({
+    assignedTo: assignedTo || "",
+    assignedTeam: assignedTeam || "",
+    assignedBy: assignedBy || "",
+  })
+
+  const [expanded, setExpanded] = useState(false)
+  const [showAIAnalysis, setShowAIAnalysis] = useState(false)
+
   const updateStatus = async (newStatus) => {
 
     try {
 
-      await axios.put(
-        `http://localhost:9090/api/issues/${id}/status?status=${newStatus}`
-      )
+      const response = await axios.put(
+  `http://localhost:9090/api/issues/${id}/status?status=${newStatus}`
+)
 
-      window.location.reload()
+console.log(response.data)
+setIssues(
+  issues.map(issue =>
+    issue.id === id
+      ? response.data
+      : issue
+  )
+)
+
+    } catch (err) {
+
+      console.log(err)
+      console.error("Failed to update issue status")
+    }
+  }
+
+  const assignIssue = async () => {
+
+    try {
+
+      const response = await axios.put(
+  `http://localhost:9090/api/issues/${id}/assign`,
+  {
+    assignedTo: assignmentForm.assignedTo,
+    assignedTeam: assignmentForm.assignedTeam,
+    assignedBy: assignmentForm.assignedBy,
+  }
+)
+
+setIssues(
+  issues.map(issue =>
+    issue.id === id
+      ? response.data
+      : issue
+  )
+)
 
     } catch (err) {
 
@@ -74,6 +123,10 @@ import axios from "axios"
 
             <span className="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-semibold">
               Occurrences: {occurrences || 1}
+            </span>
+
+            <span className="px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold">
+              {assignedTo ? `Assigned: ${assignedTo}` : "Unassigned"}
             </span>
 
           </div>
@@ -128,14 +181,101 @@ import axios from "axios"
 
       </div>
 
+
       <div className="mt-6">
 
-        <p className="text-slate-400 whitespace-pre-wrap">
-          {description}
-        </p>
+  <p className="text-slate-400 whitespace-pre-wrap">
+    {description}
+  </p>
+
+  <button
+    onClick={() => setExpanded(!expanded)}
+    className="mt-4 px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition"
+  >
+    {expanded ? "Hide Details ▲" : "View Details ▼"}
+  </button>
+
+</div>
+{expanded && (
+  <>
+  <div className="mt-5 border-t border-white/10 pt-5">
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+          <input
+            value={assignmentForm.assignedTo}
+            onChange={(e) =>
+              setAssignmentForm((prev) => ({
+                ...prev,
+                assignedTo: e.target.value,
+              }))
+            }
+            placeholder="Assigned To"
+            className="bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"
+          />
+
+          <input
+            value={assignmentForm.assignedTeam}
+            onChange={(e) =>
+              setAssignmentForm((prev) => ({
+                ...prev,
+                assignedTeam: e.target.value,
+              }))
+            }
+            placeholder="Assigned Team"
+            className="bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"
+          />
+
+          <input
+            value={assignmentForm.assignedBy}
+            onChange={(e) =>
+              setAssignmentForm((prev) => ({
+                ...prev,
+                assignedBy: e.target.value,
+              }))
+            }
+            placeholder="Assigned By"
+            className="bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"
+          />
+
+        </div>
+
+        <div className="mt-3 flex items-center gap-3 flex-wrap">
+
+          <button
+            onClick={assignIssue}
+            className="px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 transition"
+          >
+            {assignedTo ? "Reassign" : "Assign"}
+          </button>
+
+          {assignedTo && (
+            <span className="text-xs text-cyan-300">
+              To: {assignedTo}
+            </span>
+          )}
+
+          {assignedTeam && (
+            <span className="text-xs text-slate-400">
+              Team: {assignedTeam}
+            </span>
+          )}
+
+          {assignedBy && (
+            <span className="text-xs text-slate-400">
+              By: {assignedBy}
+            </span>
+          )}
+
+          {assignedAt && (
+            <span className="text-xs text-slate-400">
+              At: {new Date(assignedAt).toLocaleString()}
+            </span>
+          )}
+
+        </div>
 
       </div>
-
       {/* Incident Intelligence */}
 
       <div className="mt-8 border-t border-white/10 pt-6">
@@ -209,23 +349,36 @@ import axios from "axios"
         </div>
 
       </div>
+      
 
       {/* AI Analysis */}
 
-      <div className="mt-8 border-t border-white/10 pt-6">
+<div className="mt-8 border-t border-white/10 pt-6">
+
+  <button
+    onClick={() => setShowAIAnalysis(!showAIAnalysis)}
+    className="flex items-center gap-2 text-cyan-400 font-bold"
+  >
+    {showAIAnalysis
+      ? "Hide AI Analysis ▲"
+      : "Show AI Analysis ▼"}
+  </button>
 
         <h3 className="text-cyan-400 font-bold">
           Raw AI Analysis
         </h3>
 
-        <div className="mt-3 bg-black/20 rounded-xl p-4">
+        {showAIAnalysis && (
 
-          <pre className="text-slate-300 whitespace-pre-wrap text-sm overflow-x-auto">
-            {aiAnalysis}
-          </pre>
+  <div className="mt-3 bg-black/20 rounded-xl p-4">
 
-        </div>
+    <pre className="text-slate-300 whitespace-pre-wrap text-sm overflow-x-auto">
+      {aiAnalysis}
+    </pre>
 
+  </div>
+
+)}
       </div>
 
       {/* Suggested Fix */}
@@ -241,6 +394,7 @@ import axios from "axios"
         </p>
 
       </div>
+
 
       {/* Status Actions */}
 
@@ -267,11 +421,12 @@ import axios from "axios"
           Resolved
         </button>
 
-      </div>
-
     </div>
+  </>
+)}
+
+ </div>
 
   )
 }
-
 export default IssueCard

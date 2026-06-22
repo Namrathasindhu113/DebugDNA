@@ -152,45 +152,48 @@ setTechStack("")
 
       </div>
 
-      <div className="mt-8 grid gap-4">
-
-        {projects.map((project) => (
-
-          <Link
-            key={project.id}
-            to={`/projects/${project.id}`}
-            className="bg-white/5 border border-white/10 rounded-2xl p-5"
-          >
-
-            <h3 className="text-xl font-bold">
-              {project.name}
-            </h3>
-
-            <p className="mt-2 text-slate-400">
-              {project.environment}
+      <div className="mt-8">
+        {projects.length === 0 ? (
+          <div className="flex min-h-[220px] items-center justify-center rounded-3xl border border-cyan-400/20 bg-white/5 p-10 text-center">
+            <p className="text-xl font-semibold text-cyan-400">
+              No projects created yet
             </p>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {projects.map((project) => (
+              <Link
+                key={project.id}
+                to={`/projects/${project.id}`}
+                className="bg-white/5 border border-white/10 rounded-2xl p-5"
+              >
+                <h3 className="text-xl font-bold">
+                  {project.name}
+                </h3>
 
-            <p className="text-slate-400">
-  Framework: {project.framework}
-</p>
+                <p className="mt-2 text-slate-400">
+                  {project.environment}
+                </p>
 
-<p className="text-slate-400">
-  Language: {project.language}
-</p>
+                <p className="text-slate-400">
+                  Framework: {project.framework}
+                </p>
 
-<p className="text-slate-400">
-  Tech Stack: {project.techStack}
-</p>
+                <p className="text-slate-400">
+                  Language: {project.language}
+                </p>
 
-            <p className="mt-3 text-cyan-400 break-all">
-              {project.apiKey}
-            </p>
+                <p className="text-slate-400">
+                  Tech Stack: {project.techStack}
+                </p>
 
-          </Link>
-
-        ))}
-        
-
+                <p className="mt-3 text-cyan-400 break-all">
+                  {project.apiKey}
+                </p>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
     </div>

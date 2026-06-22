@@ -2,12 +2,15 @@ package com.debugdna.server.controller;
 
 import com.debugdna.server.model.Project;
 import com.debugdna.server.repository.ProjectRepository;
+import com.debugdna.server.service.ProjectSummaryService;
+import com.debugdna.server.service.AuditLogService;
 
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -15,11 +18,17 @@ import java.util.List;
 public class ProjectController {
 
     private final ProjectRepository projectRepository;
+    private final ProjectSummaryService projectSummaryService;
+    private final AuditLogService auditLogService;
 
     public ProjectController(
-            ProjectRepository projectRepository) {
+            ProjectRepository projectRepository,
+            ProjectSummaryService projectSummaryService,
+            AuditLogService auditLogService) {
 
         this.projectRepository = projectRepository;
+        this.projectSummaryService = projectSummaryService;
+        this.auditLogService = auditLogService;
     }
 
     @PostMapping
@@ -32,7 +41,16 @@ public class ProjectController {
         project.setCreatedAt(
                 LocalDateTime.now());
 
-        return projectRepository.save(project);
+        Project savedProject = projectRepository.save(project);
+
+        auditLogService.log(
+                "PROJECT_CREATED",
+                "PROJECT",
+                savedProject.getId(),
+                "SYSTEM",
+                "Project created: " + savedProject.getName());
+
+        return savedProject;
     }
 
     @GetMapping
@@ -48,5 +66,12 @@ public class ProjectController {
         return projectRepository
                 .findById(id)
                 .orElseThrow();
+    }
+
+    @GetMapping("/{projectId}/summary")
+    public Map<String, Object> getProjectSummary(
+            @PathVariable String projectId) {
+
+        return projectSummaryService.getProjectSummary(projectId);
     }
 }

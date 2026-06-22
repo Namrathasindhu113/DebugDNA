@@ -6,6 +6,9 @@ import Signup from "./pages/Signup"
 import Dashboard from "./pages/Dashboard"
 import Projects from "./pages/Projects"
 import ProjectDetails from "./pages/ProjectDetails"
+import AnalyticsDashboard from "./pages/AnalyticsDashboard"
+import Settings from "./pages/Settings"
+import AuditLogs from "./pages/AuditLogs"
 
 function ProtectedRoute({ children }) {
 
@@ -49,6 +52,15 @@ function App() {
       />
 
       <Route
+  path="/analytics"
+  element={
+    <ProtectedRoute>
+      <AnalyticsDashboard />
+    </ProtectedRoute>
+  }
+/>
+
+      <Route
         path="/projects"
         element={
           <ProtectedRoute>
@@ -65,6 +77,24 @@ function App() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+  path="/audit-logs"
+  element={
+    <ProtectedRoute>
+      <AuditLogs />
+    </ProtectedRoute>
+  }
+/>
 
     </Routes>
   )

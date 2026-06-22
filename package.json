@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "lucide-react": "^1.21.0",
+    "react-toastify": "^11.1.0"
+  }
+}

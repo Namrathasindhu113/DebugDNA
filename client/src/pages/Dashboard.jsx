@@ -15,7 +15,9 @@ import AnalyticsChart from "../components/AnalyticsChart"
 import IncidentTimeline from "../components/IncidentTimeline"
 import ProjectSelector from "../components/ProjectSelector"
 import { connectWebSocket } from "../services/websocket"
-
+import CollapsibleSection from "../components/CollapsibleSection"
+import NotificationBell from "../components/NotificationBell"
+import RecentActivity from "../components/RecentActivity"
 function Dashboard() {
 
   const [issues, setIssues] = useState([])
@@ -34,6 +36,9 @@ function Dashboard() {
 
   const [statusFilter, setStatusFilter] =
   useState("ALL")
+
+  const [notifications, setNotifications] =
+  useState([])
 
   const fetchIssues = () => {
     axios
@@ -75,18 +80,23 @@ function Dashboard() {
   console.log("Connecting websocket...")
 
   const stompClient =
-  connectWebSocket(
-    (newIssue) => {
+connectWebSocket(
+  (newIssue) => {
 
-      setIssues((prev) => [
+    setIssues((prev) => [
+      newIssue,
+      ...prev,
+    ])
 
-        newIssue,
+    setNotifications((prev) => [
 
-        ...prev,
-      ])
-    }
-  )
+      `🚨 ${newIssue.severity} Issue: ${newIssue.title}`,
 
+      ...prev,
+
+    ])
+  }
+)
   const interval = setInterval(() => {
     fetchIssues()
   }, 3000)
@@ -141,24 +151,49 @@ const filteredIssues = issues.filter(
     (issue) => issue.severity === "HIGH"
   ).length
 
+  const projectIssues =
+  selectedProject === "ALL"
+    ? []
+    : issues.filter(
+        (issue) =>
+          issue.projectId === selectedProject
+      )
+
+const activeProjectIssues =
+  projectIssues.filter(
+    (issue) => issue.status === "ACTIVE"
+  ).length
+
+const resolvedProjectIssues =
+  projectIssues.filter(
+    (issue) => issue.status === "RESOLVED"
+  ).length
+
+const projectHealth =
+  projectIssues.length === 0
+    ? 100
+    : Math.max(
+        0,
+        100 -
+          projectIssues.length * 10
+      )
+
   return (
     <DashboardLayout>
 
       {/* HEADER */}
-      <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-10">
+      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-10">
 
         <div>
-          <h1 className="text-5xl xl:text-6xl font-bold leading-tight bg-gradient-to-r from-cyan-300 to-blue-500 bg-clip-text text-transparent">
-            AI Monitoring
-            <br />
-            Dashboard
-          </h1>
+          <h1 className="text-3xl font-bold text-cyan-400">
+  Overview
+</h1>
 
-          <p className="mt-5 text-slate-400 text-lg max-w-2xl leading-relaxed">
-            Live AI-powered debugging and infrastructure monitoring
-          </p>
+<p className="mt-2 text-slate-400">
+  Live AI-powered debugging and infrastructure monitoring
+</p>
 
-          <div className="mt-5 flex items-center gap-3">
+<div className="mt-4 flex items-center gap-3">
 
             <div className="h-3 w-3 rounded-full bg-green-400 animate-pulse" />
 
@@ -168,10 +203,16 @@ const filteredIssues = issues.filter(
 
           </div>
         </div>
+<div className="flex justify-end mb-4">
 
+  <NotificationBell
+    notifications={notifications}
+  />
+
+</div>
         {/* STATS */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-5 w-full xl:w-auto">
-
+        
           <StatsCard
             title="Total Issues"
             value={issues.length}
@@ -260,34 +301,6 @@ const filteredIssues = issues.filter(
 </option>
   </select>
 
-</div>
-
-      <div className="mt-8 flex gap-4 flex-wrap">
-
-  <button
-    onClick={() => setSelectedProject("ALL")}
-    className="px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-400"
-  >
-    ALL
-  </button>
-
-  {[...new Set(
-    issues.map(
-      (issue) => issue.projectId
-    )
-  )].map((project) => (
-
-    <button
-      key={project}
-      onClick={() =>
-        setSelectedProject(project)
-      }
-      className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-400 transition"
-    >
-      {project}
-    </button>
-
-  ))}
 
 </div>
 
@@ -309,69 +322,193 @@ const filteredIssues = issues.filter(
 
 </div>
 
-      {/* FORM + ISSUE FEED */}
-      <div className="mt-12 grid grid-cols-1 xl:grid-cols-3 gap-8">
+<div className="mt-6">
+  <RecentActivity
+    issues={issues}
+  />
+</div>
 
-        {/* ISSUE FORM */}
-        <div className="xl:col-span-1">
-          <IssueForm refreshIssues={fetchIssues} />
+
+{/* FORM + ISSUE FEED */}
+<div className="mt-12 grid grid-cols-1 xl:grid-cols-3 gap-8">
+
+  {/* LEFT COLUMN */}
+  <div className="xl:col-span-1 space-y-6">
+
+    {
+      selectedProject !== "ALL" && (
+
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
+
+          <h2 className="text-xl font-bold text-cyan-400">
+            Project Intelligence
+          </h2>
+
+          <div className="space-y-4 mt-5">
+
+            <div>
+              <p className="text-slate-400 text-sm">
+                Project
+              </p>
+
+              <p className="text-white font-semibold">
+                {selectedProject}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-slate-400 text-sm">
+                Total Incidents
+              </p>
+
+              <p className="text-cyan-400 font-bold">
+                {projectIssues.length}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-slate-400 text-sm">
+                Active Incidents
+              </p>
+
+              <p className="text-red-400 font-bold">
+                {activeProjectIssues}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-slate-400 text-sm">
+                Resolved
+              </p>
+
+              <p className="text-green-400 font-bold">
+                {resolvedProjectIssues}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-slate-400 text-sm">
+                Health Score
+              </p>
+
+              <p className="text-green-400 font-bold">
+                {projectHealth}%
+              </p>
+            </div>
+
+          </div>
+
         </div>
 
-        {/* ISSUE LIST */}
-        <div className="xl:col-span-2 grid grid-cols-1 gap-6">
+      )
+    }
 
-          {filteredIssues.map((issue) => (
-            <IssueCard
-  id={issue.id}
-  title={issue.title}
-  severity={issue.severity}
-  description={issue.description}
-  aiAnalysis={issue.aiAnalysis}
+    <IssueForm
+      refreshIssues={fetchIssues}
+    />
 
-  rootCause={issue.rootCause}
-  businessImpact={issue.businessImpact}
-  recoverySteps={issue.recoverySteps}
-  preventionStrategy={issue.preventionStrategy}
-  confidenceScore={issue.confidenceScore}
+  </div>
 
-  suggestedFix={issue.suggestedFix}
-  occurrences={issue.occurrences}
-  status={issue.status}
-  lastSeen={issue.lastSeen}
-  environment={issue.environment}
-  projectId={issue.projectId}
-/>
-          ))}
-
+  {/* ISSUE LIST */}
+  <div className="xl:col-span-2">
+    {issues.length === 0 ? (
+      <div className="flex min-h-[260px] items-center justify-center rounded-3xl border border-cyan-400/20 bg-white/5 p-10 text-center">
+        <div>
+          <h3 className="text-2xl font-semibold text-cyan-400">
+            No incidents detected yet
+          </h3>
+          <p className="mt-2 text-slate-400">
+            Your monitoring environment looks healthy.
+          </p>
         </div>
+      </div>
+    ) : filteredIssues.length === 0 ? (
+      <div className="flex min-h-[260px] items-center justify-center rounded-3xl border border-cyan-400/20 bg-white/5 p-10 text-center">
+        <div>
+          <h3 className="text-2xl font-semibold text-cyan-400">
+            No incidents match your filters
+          </h3>
+        </div>
+      </div>
+    ) : (
+      <div className="grid grid-cols-1 gap-6">
+        {filteredIssues.map((issue) => (
+          <IssueCard
+            key={issue.id}
+            id={issue.id}
+            title={issue.title}
+            severity={issue.severity}
+            description={issue.description}
+            aiAnalysis={issue.aiAnalysis}
+            rootCause={issue.rootCause}
+            businessImpact={issue.businessImpact}
+            recoverySteps={issue.recoverySteps}
+            preventionStrategy={issue.preventionStrategy}
+            confidenceScore={issue.confidenceScore}
+            suggestedFix={issue.suggestedFix}
+            occurrences={issue.occurrences}
+            status={issue.status}
+            lastSeen={issue.lastSeen}
+            environment={issue.environment}
+            projectId={issue.projectId}
+            assignedTo={issue.assignedTo}
+            assignedTeam={issue.assignedTeam}
+            assignedBy={issue.assignedBy}
+            assignedAt={issue.assignedAt}
+            setIssues={setIssues}
+            issues={issues}
+          />
+        ))}
+      </div>
+    )}
+  </div>
 
       </div>
 
-      {/* AI PANEL */}
-      <div className="mt-10">
-        <AITerminal />
-      </div>
-      <div className="mt-10">
-  <AIChat />
-</div>
+      <div className="mt-10 space-y-6">
 
-<div className="mt-10">
-  <LogAnalyzer />
-</div>
+  <CollapsibleSection
+    title="AI Assistant"
+  >
+    <AIChat />
+  </CollapsibleSection>
 
-<div className="mt-10">
-  <DeploymentPanel />
-</div>
-<div className="mt-10">
-  <FileUploadAnalyzer />
-</div>
+  <CollapsibleSection
+    title="AI Terminal"
+  >
+    <AITerminal />
+  </CollapsibleSection>
 
-<div className="mt-10">
-  <AnalyticsChart issues={issues} />
-</div>
+  <CollapsibleSection
+    title="AI Log Analyzer"
+  >
+    <LogAnalyzer />
+  </CollapsibleSection>
 
-<div className="mt-10">
-  <IncidentTimeline issues={issues} />
+  <CollapsibleSection
+    title="Deployment Monitor"
+  >
+    <DeploymentPanel />
+  </CollapsibleSection>
+
+  <CollapsibleSection
+    title="File Upload Analyzer"
+  >
+    <FileUploadAnalyzer />
+  </CollapsibleSection>
+
+  <CollapsibleSection
+    title="Analytics Preview"
+  >
+    <AnalyticsChart issues={issues} />
+  </CollapsibleSection>
+
+  <CollapsibleSection
+    title="Incident Timeline"
+  >
+    <IncidentTimeline issues={issues} />
+  </CollapsibleSection>
+
 </div>
 
     </DashboardLayout>

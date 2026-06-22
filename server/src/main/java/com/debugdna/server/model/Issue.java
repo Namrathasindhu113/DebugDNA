@@ -35,6 +35,14 @@ public class Issue {
 
     private String suggestedFix;
 
+    private String assignedTo;
+
+    private String assignedTeam;
+
+    private String assignedBy;
+
+    private LocalDateTime assignedAt;
+
     private String projectId;
 
     private String environment;

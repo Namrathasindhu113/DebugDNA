@@ -23,7 +23,17 @@ function ProjectSelector({
             e.target.value
           )
         }
-        className="bg-black/30 border border-white/10 rounded-xl px-4 py-2 outline-none focus:border-cyan-400"
+        className="
+bg-[#0B1220]
+text-white
+border
+border-cyan-400/40
+rounded-xl
+px-4
+py-3
+outline-none
+focus:border-cyan-400
+"
       >
 
         <option value="ALL">
