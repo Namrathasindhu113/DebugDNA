@@ -163,8 +163,3 @@ Information Science Engineering, Garden City University
 GitHub: https://github.com/Namrathasindhu113
 
 ---
-
-If you'd like, I can also:
-- Add badges (build, license, languages)
-- Add a short quickstart for the SDK (example instrumentation snippet)
-- Split the README into docs/ with smaller files and a TOC
