@@ -1,198 +1,305 @@
 # DebugDNA
 
-## AI-Powered Monitoring and Debugging Platform
+## AI-Powered Software Monitoring and Debugging Platform
 
-DebugDNA is an intelligent software monitoring and debugging platform designed to help developers identify, analyze, and resolve application issues faster through centralized observability, real-time monitoring, audit tracking, and AI-assisted diagnostics.
+DebugDNA is a full-stack AI-powered monitoring and debugging platform designed to help developers and engineering teams identify, analyze, track, and resolve software issues efficiently.
 
-The platform provides a unified environment for monitoring application behavior, tracking system events, analyzing failures, and maintaining complete visibility into software operations. By combining real-time event processing, audit intelligence, and AI-driven insights, DebugDNA reduces debugging time and improves software reliability.
+The platform combines intelligent incident management, AI-generated diagnostics, project monitoring, analytics, audit logging, and operational visibility into a centralized engineering dashboard.
 
----
-
-## Problem Statement
-
-Modern software systems generate massive volumes of logs, events, exceptions, and performance data. Developers often spend significant time navigating fragmented monitoring tools, manually tracing failures, and identifying root causes.
-
-DebugDNA addresses these challenges by providing:
-
-* Centralized monitoring
-* Intelligent event tracking
-* AI-assisted debugging workflows
-* Real-time system visibility
-* Root-cause investigation support
-* Comprehensive audit logging
+By integrating AI-assisted root cause analysis with structured incident workflows, DebugDNA helps reduce debugging effort, improve issue resolution speed, and maintain complete visibility across software projects.
 
 ---
 
-## Core Features
+# Overview
 
-### Real-Time Monitoring
+Modern applications generate large volumes of operational events, failures, and system issues. Identifying root causes often requires engineers to manually investigate logs, trace failures, and coordinate across multiple tools.
 
-* Live application monitoring
-* Continuous event tracking
-* Real-time status updates
-* WebSocket-powered synchronization
-* System activity visualization
+DebugDNA simplifies this process by providing:
 
-### AI-Assisted Debugging
+* Centralized incident management
+* AI-assisted root cause analysis
+* Intelligent debugging insights
+* Project-level monitoring
+* Audit trail tracking
+* Engineering analytics
+* Team assignment workflows
 
-* Automated anomaly detection
-* Intelligent issue categorization
-* Context-aware debugging assistance
-* Failure pattern analysis
-* Root-cause investigation support
+---
 
-### Audit Intelligence
+# Core Features
 
-* Complete audit trail generation
-* Historical activity tracking
-* Event correlation
-* User action monitoring
-* Change traceability
+## Project Management
 
-### Incident Tracking
+* Create and manage projects
+* Project-specific issue tracking
+* Project health monitoring
+* Secure API key generation
+* Project summary dashboard
 
-* Issue creation and management
-* Priority classification
+---
+
+## AI Incident Intelligence
+
+Each issue automatically receives AI-generated diagnostics including:
+
+* Root Cause Analysis
+* Business Impact Assessment
+* Recovery Steps
+* Prevention Strategy
+* Suggested Fix
+* Confidence Score
+
+This helps engineers understand and resolve incidents faster.
+
+---
+
+## Issue Management
+
+Manage the complete issue lifecycle:
+
+* Create incidents
+* Severity classification
+* Status tracking
 * Assignment workflows
-* Status lifecycle management
-* Resolution tracking
+* Team ownership tracking
+* Resolution management
 
-### Observability Dashboard
-
-* Centralized monitoring dashboard
-* Application health insights
-* Activity summaries
-* Issue statistics
-* Operational visibility
-
-### Event Management
-
-* Structured event recording
-* Event lifecycle tracking
-* Historical event analysis
-* Real-time event streaming
-
----
-
-## Key Audit Events
-
-The platform currently tracks:
-
-| Event Type           | Description                    |
-| -------------------- | ------------------------------ |
-| PROJECT_CREATED      | New project registration       |
-| ISSUE_CREATED        | New incident or issue detected |
-| ISSUE_ASSIGNED       | Ownership assignment tracking  |
-| ISSUE_STATUS_UPDATED | Issue lifecycle transitions    |
-
----
-
-## System Architecture
+Supported statuses:
 
 ```text
-                        ┌────────────────────┐
-                        │      Frontend      │
-                        │ React + Tailwind   │
-                        └─────────┬──────────┘
-                                  │
-                                  ▼
-                        ┌────────────────────┐
-                        │   Spring Boot API  │
-                        │ Business Services  │
-                        └─────────┬──────────┘
-                                  │
-               ┌──────────────────┼──────────────────┐
-               │                  │                  │
-               ▼                  ▼                  ▼
-
-      ┌──────────────┐   ┌──────────────┐   ┌──────────────┐
-      │ Audit Engine │   │ AI Analysis  │   │ WebSockets   │
-      │ Event Logs   │   │ Diagnostics  │   │ Live Updates │
-      └──────┬───────┘   └──────────────┘   └──────────────┘
-             │
-             ▼
-
-      ┌────────────────────┐
-      │      MySQL DB      │
-      │ Monitoring Data    │
-      └────────────────────┘
+ACTIVE
+INVESTIGATING
+RESOLVED
 ```
 
 ---
 
-## Technology Stack
+## Issue Assignment System
 
-### Frontend
+Track ownership and accountability through:
+
+* Assigned To
+* Assigned Team
+* Assigned By
+* Assignment Timestamp
+
+This enables structured incident management and team collaboration.
+
+---
+
+## Similar Incident Detection
+
+Identify previously reported incidents with similar characteristics.
+
+Benefits:
+
+* Faster troubleshooting
+* Knowledge reuse
+* Reduced debugging effort
+* Improved incident resolution
+
+---
+
+## Audit Trail System
+
+DebugDNA maintains a complete history of operational activities.
+
+Tracked events include:
+
+| Event                | Description                  |
+| -------------------- | ---------------------------- |
+| PROJECT_CREATED      | Project creation activity    |
+| ISSUE_CREATED        | New issue creation           |
+| ISSUE_ASSIGNED       | Assignment workflow activity |
+| ISSUE_STATUS_UPDATED | Status lifecycle changes     |
+
+Audit records store:
+
+* Action
+* Entity Type
+* Entity ID
+* Performed By
+* Timestamp
+* Details
+
+---
+
+## Analytics Dashboard
+
+Provides operational visibility through:
+
+* Total Issues
+* Critical Issues
+* Project Health Metrics
+* Incident Distribution
+* Assignment Insights
+* Engineering Activity Trends
+
+---
+
+## Real-Time Monitoring Dashboard
+
+The platform provides a centralized monitoring interface with:
+
+* Live incident visibility
+* Project overview
+* AI diagnostics
+* Assignment tracking
+* Operational summaries
+
+---
+
+# System Architecture
+
+```text
+                     ┌─────────────────────────┐
+                     │       React Frontend    │
+                     │ Dashboard + Analytics   │
+                     └─────────────┬───────────┘
+                                   │
+                                   ▼
+
+                     ┌─────────────────────────┐
+                     │    Spring Boot API      │
+                     │  Business Logic Layer   │
+                     └─────────────┬───────────┘
+                                   │
+
+      ┌────────────────────────────┼────────────────────────────┐
+      │                            │                            │
+      ▼                            ▼                            ▼
+
+┌──────────────┐        ┌────────────────┐         ┌─────────────────┐
+│ Audit Engine │        │ AI Intelligence │         │ Project Services │
+│ Activity Log │        │ Root Cause AI   │         │ Project Summary  │
+└──────┬───────┘        └────────────────┘         └─────────────────┘
+       │
+       ▼
+
+┌──────────────────────────────────────────────┐
+│                   MongoDB                    │
+│ Projects • Issues • Audit Logs • Analytics   │
+└──────────────────────────────────────────────┘
+```
+
+---
+
+# Technology Stack
+
+## Frontend
 
 * React.js
 * Vite
 * Tailwind CSS
 * Axios
 * React Router
+* Recharts
+* Lucide React
 
-### Backend
+---
+
+## Backend
 
 * Spring Boot
-* Spring Data JPA
-* Spring Security
+* Java
 * REST APIs
-* WebSockets
+* Maven
 
-### Database
+---
 
-* MySQL
+## Database
 
-### AI & Analytics
+* MongoDB
 
-* AI-powered diagnostic workflows
-* Event analysis engine
-* Monitoring intelligence modules
+---
 
-### Development Tools
+## AI Layer
+
+* Groq API
+* AI Root Cause Analysis
+* AI Suggested Fix Generation
+* Incident Intelligence Engine
+
+---
+
+## Development Tools
 
 * Git
 * GitHub
-* Maven
-* VS Code
 * Postman
+* VS Code
 
 ---
 
-## Engineering Highlights
+# Engineering Highlights
 
-### Real-Time Event Streaming
+## Full-Stack Architecture
 
-Implemented WebSocket-based communication to deliver instant monitoring updates and system notifications.
-
-### Audit Trail Engine
-
-Designed a centralized audit mechanism to maintain complete traceability across system activities and debugging workflows.
-
-### Modular Architecture
-
-Developed using a scalable service-oriented architecture that separates monitoring, event management, AI analysis, and data persistence layers.
-
-### Full-Stack Development
-
-Built end-to-end using React, Spring Boot, and MySQL with RESTful communication patterns.
-
+Built using React, Spring Boot, and MongoDB with RESTful API communication.
 
 ---
 
-## Use Cases
+## AI-Powered Diagnostics
 
-* Application Monitoring
-* Software Debugging
+Integrated AI-generated incident analysis to automatically provide:
+
+* Root causes
+* Recovery guidance
+* Prevention strategies
+* Suggested fixes
+
+---
+
+## Audit Intelligence
+
+Implemented a centralized audit trail system to maintain operational accountability and complete activity traceability.
+
+---
+
+## Incident Lifecycle Management
+
+Designed structured workflows for issue creation, assignment, investigation, and resolution.
+
+---
+
+## Analytics & Monitoring
+
+Developed dashboards that provide engineering teams with operational visibility and project health insights.
+
+---
+
+# Use Cases
+
+* Software Monitoring
+* Application Debugging
 * Incident Management
-* Operational Visibility
 * Root Cause Analysis
-* Development Team Collaboration
-* Software Reliability Engineering
-* DevOps Monitoring Workflows
+* Engineering Analytics
+* Operational Visibility
+* Team Collaboration
+* Reliability Engineering
 
 ---
 
-## Author
+# Future Roadmap
+
+## DebugDNA Agent
+
+Planned evolution into an AI Software Engineering Agent featuring:
+
+* Project Intelligence Engine
+* Architecture Analysis
+* Error Intelligence
+* AI Engineering Assistant
+* Git Review Assistant
+* AI Chat with Project Context
+* Quick Fix Recommendations
+* Apply Fix Engine
+* Rollback System
+
+---
+
+# Author
 
 **Namratha Sindhu M**
 
@@ -205,3 +312,6 @@ LinkedIn: https://www.linkedin.com/in/namratha-sindhu-m-3906a22b2
 
 ---
 
+## DebugDNA
+
+**AI-Powered Monitoring, Incident Intelligence, and Debugging Platform**
